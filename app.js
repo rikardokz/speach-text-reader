@@ -1,9 +1,11 @@
 const main = document.querySelector("main");
 const voicesSelect = document.getElementById("voices");
 const textarea = document.getElementById("text");
+const textBox = document.getElementById("text-box");
 const readBtn = document.getElementById("read");
 const toggleBtn = document.getElementById("toggle");
 const closeBtn = document.getElementById("close");
+const synth = window.speechSynthesis;
 
 const data = [
   {
@@ -69,3 +71,36 @@ function createBox(item) {
     `;
   main.appendChild(box);
 }
+
+let voices = [];
+
+function populateVoiceList() {
+  voices = synth.getVoices();
+
+  voices.forEach((voice) => {
+    const option = document.createElement("option");
+    option.innerText = `${voice.name} - ${voice.lang}`;
+
+    if (voice.default) {
+      option.innerText += " -- DEFAULT";
+    }
+
+    voicesSelect.appendChild(option);
+  });
+}
+
+// Voices changed
+speechSynthesis.addEventListener("voiceschanged", populateVoiceList);
+
+// toggle text box
+toggleBtn.addEventListener("click", () => {
+  populateVoiceList();
+  textBox.style.transform = "translate(-50%,0)";
+});
+
+// close text box
+closeBtn.addEventListener("click", () => {
+  textBox.style.transform = "translate(-50%,-800px)";
+});
+
+textarea.addEventListener("submit", (e) => {});
